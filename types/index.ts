@@ -56,6 +56,19 @@ export type CreateGameFormData = Omit<
   "id" | "createdBy" | "createdAt" | "playersJoined"
 >;
 
+/** Create Game tab form state (location is set on submit until Phase 3 geocoding). */
+export interface CreateGameScreenFormValues {
+  title: string;
+  surface: "" | Game["surface"];
+  fieldName: string;
+  address: string;
+  date: string;
+  time: string;
+  playersMax: string;
+  type: "" | Game["type"];
+  minigameType: string;
+}
+
 /** Filter for game list / map views by surface. */
 export interface SurfaceFilter {
   type: "all" | "outdoor" | "indoor" | "futsal";

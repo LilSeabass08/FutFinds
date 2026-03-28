@@ -111,7 +111,10 @@ export async function createGame(data: CreateGameFormData, userId: string): Prom
   }
 }
 
-export function getGamesListener(callback: (games: Game[]) => void): Unsubscribe {
+export function getGamesListener(
+  onGames: (games: Game[]) => void,
+  onError?: (error: unknown) => void,
+): Unsubscribe {
   try {
     const db = getFirestoreDb();
     const gamesQuery = query(collection(db, 'games'), orderBy('createdAt', 'desc'));
@@ -127,15 +130,23 @@ export function getGamesListener(callback: (games: Game[]) => void): Unsubscribe
               games.push(game);
             }
           });
-          callback(games);
+          onGames(games);
         } catch (error) {
           console.error('[FutFinds] getGamesListener mapping failed:', error);
-          callback([]);
+          if (onError) {
+            onError(error);
+          } else {
+            onGames([]);
+          }
         }
       },
       (error) => {
         console.error('[FutFinds] getGamesListener snapshot error:', error);
-        callback([]);
+        if (onError) {
+          onError(error);
+        } else {
+          onGames([]);
+        }
       },
     );
   } catch (error) {
