@@ -10,3 +10,10 @@ export {
   signOutUser,
 } from './emailPasswordAuth';
 export { getFirestoreDb } from './firestore';
+export {
+  createGame,
+  getGameById,
+  getGamesListener,
+  joinGame,
+  leaveGame,
+} from './games';

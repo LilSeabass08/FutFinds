@@ -1,62 +1,27 @@
-# FutFinds — Project Context
+@CONTEXT.md
 
-## Current Phase
+Create firebase/games.ts with the following Firestore helper functions. All functions must use try/catch error handling and be fully typed using interfaces from types/index.ts.
 
-Phase 1 — Foundation (Project setup, Firebase connection, Auth, Navigation shell)
+1. createGame(data: CreateGameFormData, userId: string): Promise<string>
+   - Adds a new document to the "games" collection
+   - Automatically sets: createdBy, createdAt, playersJoined: []
+   - Returns the new document ID
 
-## What's Been Built
+2. getGamesListener(callback: (games: Game[]) => void): Unsubscribe
+   - Sets up a real-time onSnapshot listener on the "games" collection
+   - Orders by createdAt descending
+   - Maps each doc to a Game object including the doc id
+   - Returns the unsubscribe function
 
-- [ ] Expo project scaffolded
-- [ ] Firebase project created
-- [ ] Firebase Auth enabled (Email + Google)
-- [ ] Firestore database created
-- [ ] Bottom tab navigation shell
-- [ ] Login/Signup screens
+3. getGameById(gameId: string): Promise<Game | null>
+   - Fetches a single game document by ID
+   - Returns null if not found
 
-## What We're Building Now
+4. joinGame(gameId: string, userId: string): Promise<void>
+   - Uses arrayUnion to add userId to playersJoined array
+   - Should not add duplicate entries
 
-- Expo Router tab layout with 4 tabs: List, Map, Create, Account
-- Firebase config file connected to the app
-- Auth flow: if not logged in → show login screen, if logged in → show tabs
+5. leaveGame(gameId: string, userId: string): Promise<void>
+   - Uses arrayRemove to remove userId from playersJoined array
 
-## Key Decisions Made
-
-- Using Expo Router (not React Navigation)
-- Firebase handles all backend logic for MVP (no Python backend yet)
-- TypeScript strict mode throughout
-- Firestore collections: `games`, `users`
-
-## What's Coming Next (Phase 2)
-
-- Create Game form
-- Game list feed from Firestore
-- Join game functionality
-- Surface filters (outdoor/indoor/futsal)
-
-## Known Issues / Blockers
-
-- None yet
-
-## Environment Variables Needed
-
-- EXPO_PUBLIC_FIREBASE_API_KEY
-- EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN
-- EXPO_PUBLIC_FIREBASE_PROJECT_ID
-- EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET
-- EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
-- EXPO_PUBLIC_FIREBASE_APP_ID
-- EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
-
-```
-
----
-
-### How to Use These in Cursor
-
-1. **`.cursorrules`** is automatic — Cursor reads it on every prompt in your project
-2. **`CONTEXT.md`** — reference it manually by typing `@CONTEXT.md` at the start of important prompts
-3. **Suggested prompt pattern to use every session:**
-```
-
-@CONTEXT.md I'm working on Phase 1. Help me [specific task].
-Follow the rules in .cursorrules.
+Follow all rules in .cursorrules.
