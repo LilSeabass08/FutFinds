@@ -1,26 +1,75 @@
 /*
  * This file defines the root navigation stack for the FutFinds app.
- * It sets the app theme and registers the top-level route groups.
+ * It sets the app theme, registers top-level routes, and redirects by auth state.
  */
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
+import { ThemeProvider } from '@react-navigation/native';
+import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import 'react-native-reanimated';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { NavigationTheme } from '@/constants/theme';
+import { AuthProvider, useAuth } from '@/hooks/AuthContext';
+
+SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
+function RootLayoutNav() {
+  const { user, initializing } = useAuth();
+  const segments = useSegments();
+  const router = useRouter();
+  const navigationState = useRootNavigationState();
+
+  useEffect(() => {
+    if (!initializing) {
+      SplashScreen.hideAsync();
+    }
+  }, [initializing]);
+
+  useEffect(() => {
+    if (!navigationState?.key || initializing) {
+      return;
+    }
+
+    const inAuthGroup = segments[0] === 'auth';
+
+    if (!user && !inAuthGroup) {
+      router.replace('/auth/login');
+    } else if (user && inAuthGroup) {
+      router.replace('/(tabs)');
+    }
+  }, [user, initializing, segments, navigationState?.key, router]);
+
+  if (!navigationState?.key || initializing) {
+    return null;
+  }
+
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="auth" />
+      <Stack.Screen name="game/[id]" options={{ headerShown: true, title: 'Game' }} />
+    </Stack>
+  );
+}
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? NavigationTheme.dark : NavigationTheme.light}>
+          <RootLayoutNav />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }
