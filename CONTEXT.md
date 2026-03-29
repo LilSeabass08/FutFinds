@@ -85,3 +85,85 @@ STYLE:
 - Wrap in a ScrollView so it works on small screens
 - Use clean inline styles, no external UI library
 - Selected pills/cards should have a highlighted green border and background tint
+
+Step 5:
+@CONTEXT.md
+
+Create a reusable component at components/GameCard.tsx. It receives a Game object as a prop and displays:
+
+- Game title (bold, large)
+- Surface type badge (pill shape, color coded: green for outdoor, blue for indoor, orange for futsal)
+- Game type label ("Scrimmage" or the minigameType name if it's a minigame)
+- Field name and address (with a 📍 pin emoji)
+- Date and time (with a 🗓 emoji)
+- Players count: "X / Y players" where X is playersJoined.length and Y is playersMax
+- A subtle progress bar showing how full the game is (playersJoined / playersMax)
+- If the game is full, show a "Full" badge instead of the count
+
+The card should:
+
+- Have a white background, rounded corners, and a subtle shadow
+- Be touchable (use TouchableOpacity) and accept an onPress prop
+- Be fully typed with TypeScript
+
+Follow all rules in .cursorrules.
+
+Step 6:
+@CONTEXT.md
+
+Build the List View screen at app/(tabs)/index.tsx. Requirements:
+
+HEADER AREA:
+
+- App name "FutFinds" as the screen title
+- A horizontal scrollable row of filter pills below the title:
+  All | Outdoor | Indoor | Futsal
+- Active filter pill should be highlighted in green
+
+GAME LIST:
+
+- Use the useGames hook, passing in the active surface filter
+- Render a FlatList of GameCard components
+- Each GameCard onPress navigates to app/game/[id].tsx passing the game id
+- Show a loading spinner (ActivityIndicator) while loading is true
+- Show "No games found" centered on screen if the list is empty
+- Show an error message if error is not null
+- Add a pull-to-refresh using the FlatList refreshing and onRefresh props
+
+Follow all rules in .cursorrules.
+
+Step 7:
+@CONTEXT.md
+
+Build the Game Detail screen at app/game/[id].tsx. Requirements:
+
+DATA LOADING:
+
+- Read the game ID from the route using useLocalSearchParams from expo-router
+- Call getGameById from firebase/games.ts on mount
+- Show a loading spinner while fetching
+- Show an error state if game is not found
+
+DISPLAY:
+
+- Game title (large, bold header)
+- Surface badge (same style as GameCard)
+- Game type / minigame type
+- Full address with 📍
+- Date and time with 🗓
+- Players section:
+  - "X / Y players joined"
+  - A progress bar
+  - List of joined player count as avatar placeholder circles (no names needed yet)
+
+JOIN / LEAVE BUTTON:
+
+- If the current user is NOT in playersJoined: show a green "Join Game" button
+  - On press: call joinGame from firebase/games.ts
+  - Disable and show spinner while loading
+- If the current user IS in playersJoined: show a red outlined "Leave Game" button
+  - On press: call leaveGame from firebase/games.ts
+- If the game is full and user has not joined: show a disabled grey "Game Full" button
+- If the current user is the creator (createdBy === user.uid): hide the join/leave button entirely and show a small "You created this game" label instead
+
+Use useAuth to get current user. Follow all rules in .cursorrules.
