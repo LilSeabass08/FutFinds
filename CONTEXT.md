@@ -167,3 +167,30 @@ JOIN / LEAVE BUTTON:
 - If the current user is the creator (createdBy === user.uid): hide the join/leave button entirely and show a small "You created this game" label instead
 
 Use useAuth to get current user. Follow all rules in .cursorrules.
+
+Step 8:
+@CONTEXT.md
+
+Build a basic Account screen at app/(tabs)/account.tsx. Requirements:
+
+DISPLAY:
+
+- User's display name (large, centered at top)
+- Placeholder avatar circle with the user's first initial
+- Two stat rows:
+  - "Games Created" with the count from the user's Firestore document
+  - "Games Joined" with the count
+
+DATA:
+
+- Create firebase/users.ts function getUserById(userId): Promise<AppUser | null> if it doesn't already exist
+- Create hooks/useUser.ts hook that fetches the current user's Firestore document and returns { userData, loading }
+- Use useAuth for the uid, useUser for the profile data
+
+SIGN OUT:
+
+- A "Sign Out" button at the bottom
+- Calls signOutUser from firebase/auth.ts
+- On success, the auth guard in \_layout.tsx will automatically redirect to login
+
+Follow all rules in .cursorrules.

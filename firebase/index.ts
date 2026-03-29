@@ -17,3 +17,4 @@ export {
   joinGame,
   leaveGame,
 } from './games';
+export { getUserById } from './users';
