@@ -4,10 +4,11 @@
 import { CreateGameFormBody } from '@/components/CreateGameFormBody';
 import { createGame } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
-import { styles } from '@/styles/screens/Create.styles';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
+import { getCreateScreenStyles } from '@/styles/screens/Create.styles';
 import type { CreateGameFormData, CreateGameScreenFormValues } from '@/types';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
@@ -43,6 +44,9 @@ function getCreateGameErrorMessage(error: unknown): string {
 
 export default function CreateScreen() {
   const router = useRouter();
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateScreenStyles(colorScheme), [colorScheme]);
+
   const { user } = useAuth();
   const [submitError, setSubmitError] = useState<string | null>(null);
 

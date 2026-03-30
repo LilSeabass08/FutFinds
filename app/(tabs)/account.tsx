@@ -3,15 +3,15 @@
  */
 import { signOutUser } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
 import { useUser } from '@/hooks/useUser';
+import { ThemeModePicker } from '@/components/ThemeModePicker';
 import { getAccountScreenStyles } from '@/styles/screens/Account.styles';
-import type { ColorSchemeName } from '@/types';
 import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,7 +25,7 @@ function displayInitial(name: string): string {
 }
 
 export default function AccountScreen() {
-  const colorScheme = (useColorScheme() ?? 'light') as ColorSchemeName;
+  const { colorScheme } = useThemeMode();
 
   const screenStyles = useMemo(() => getAccountScreenStyles(colorScheme), [colorScheme]);
 
@@ -80,6 +80,8 @@ export default function AccountScreen() {
             <Text style={screenStyles.statValue}>{loading ? '—' : String(gamesJoined)}</Text>
           </View>
         </View>
+
+        <ThemeModePicker />
 
         <View style={screenStyles.spacer} />
 

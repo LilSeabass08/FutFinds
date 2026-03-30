@@ -1,9 +1,10 @@
 /*
  * Single labeled text field row for Create Game (react-hook-form Controller wrapper).
  */
-import { styles } from '@/styles/components/CreateGameTextRow.styles';
+import { getCreateGameTextRowStyles } from '@/styles/components/CreateGameTextRow.styles';
 import type { CreateGameScreenFormValues } from '@/types';
-import React from 'react';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
+import React, { useMemo } from 'react';
 import { Control, Controller, FieldPath, RegisterOptions } from 'react-hook-form';
 import { Text, TextInput, TextInputProps, View } from 'react-native';
 
@@ -26,6 +27,9 @@ export function CreateGameTextRow({
   rules,
   textInputProps,
 }: CreateGameTextRowProps) {
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateGameTextRowStyles(colorScheme), [colorScheme]);
+
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{label}</Text>
@@ -42,6 +46,7 @@ export function CreateGameTextRow({
               onChangeText={onChange}
               value={value}
               placeholder={placeholder}
+              placeholderTextColor={styles.placeholderTextColor}
               {...textInputProps}
             />
             {error ? <Text style={styles.fieldError}>{error.message}</Text> : null}

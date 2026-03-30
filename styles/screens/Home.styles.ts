@@ -1,57 +1,57 @@
 /**
- * Games list (tab home) screen layout and typography.
+ * Games list (tab home) screen layout and typography — theme-aware (matches Account tab canvas).
  */
 import { Colors } from '@/styles/theme';
-import { StyleSheet } from 'react-native';
+import type { ColorSchemeName } from '@/types';
 
-const light = Colors.light;
+export function getHomeScreenStyles(colorScheme: ColorSchemeName) {
+  const c = Colors[colorScheme];
 
-export const styles = StyleSheet.create({
-  safe: {
-    flex: 1,
-    backgroundColor: light.background,
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingTop: 8,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: light.text,
-    marginBottom: 4,
-  },
-  errorBanner: {
-    paddingHorizontal: 16,
-    marginBottom: 8,
-  },
-  errorText: {
-    color: '#b91c1c',
-    textAlign: 'center',
-  },
-  centerFill: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    flexGrow: 1,
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-  },
-  listContentEmpty: {
-    justifyContent: 'center',
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 48,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#64748b',
-  },
-});
+  return {
+    safe: { flex: 1 as const, backgroundColor: c.background },
+    header: {
+      paddingHorizontal: 16,
+      paddingTop: 8,
+    },
+    title: {
+      fontSize: 26,
+      fontWeight: '800' as const,
+      color: c.text,
+      marginBottom: 4,
+    },
+    errorBanner: {
+      paddingHorizontal: 16,
+      marginBottom: 8,
+    },
+    errorText: {
+      color: colorScheme === 'dark' ? '#fca5a5' : '#b91c1c',
+      textAlign: 'center' as const,
+    },
+    centerFill: {
+      flex: 1 as const,
+      justifyContent: 'center' as const,
+      alignItems: 'center' as const,
+    },
+    list: {
+      flex: 1 as const,
+      backgroundColor: c.background,
+    },
+    listContent: {
+      flexGrow: 1,
+      paddingHorizontal: 16,
+      paddingBottom: 24,
+    },
+    listContentEmpty: {
+      justifyContent: 'center' as const,
+    },
+    emptyState: {
+      alignItems: 'center' as const,
+      justifyContent: 'center' as const,
+      paddingVertical: 48,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: c.icon,
+    },
+  };
+}

@@ -5,10 +5,10 @@
 import { Colors } from '@/styles/theme';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { useColorScheme } from 'react-native';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme() ?? 'light';
+  const { colorScheme } = useThemeMode();
   const theme = Colors[colorScheme];
 
   return (

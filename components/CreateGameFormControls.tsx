@@ -1,14 +1,11 @@
 /*
  * Surface pills, game-type cards, and minigame option pills for the Create Game screen.
  */
-import {
-  PILL_SELECTED,
-  PILL_UNSELECTED,
-  styles,
-} from '@/styles/components/CreateGameFormControls.styles';
+import { getCreateGameFormControlsStyles } from '@/styles/components/CreateGameFormControls.styles';
 import type { CreateGameScreenFormValues, Game } from '@/types';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
 import { MINIGAME_OPTIONS } from '@/types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 const SURFACE_OPTIONS: { value: Game['surface']; label: string }[] = [
@@ -24,6 +21,9 @@ interface CreateGameSurfacePillsProps {
 }
 
 export function CreateGameSurfacePills({ value, onChange, error }: CreateGameSurfacePillsProps) {
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateGameFormControlsStyles(colorScheme), [colorScheme]);
+
   return (
     <View style={styles.block}>
       <View style={styles.rowWrap}>
@@ -33,7 +33,7 @@ export function CreateGameSurfacePills({ value, onChange, error }: CreateGameSur
             <Pressable
               key={opt.value}
               onPress={() => onChange(opt.value)}
-              style={[styles.surfacePill, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              style={[styles.surfacePill, selected ? styles.selectedStyle : styles.unselectedStyle]}>
               <Text style={styles.surfacePillLabel}>{opt.label}</Text>
             </Pressable>
           );
@@ -51,6 +51,9 @@ interface CreateGameTypeCardsProps {
 }
 
 export function CreateGameTypeCards({ value, onChange, error }: CreateGameTypeCardsProps) {
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateGameFormControlsStyles(colorScheme), [colorScheme]);
+
   const cards: { value: Game['type']; label: string }[] = [
     { value: 'scrimmage', label: 'Scrimmage' },
     { value: 'minigame', label: 'Minigame' },
@@ -64,7 +67,7 @@ export function CreateGameTypeCards({ value, onChange, error }: CreateGameTypeCa
             <Pressable
               key={opt.value}
               onPress={() => onChange(opt.value)}
-              style={[styles.typeCard, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              style={[styles.typeCard, selected ? styles.selectedStyle : styles.unselectedStyle]}>
               <Text style={styles.typeCardLabel}>{opt.label}</Text>
             </Pressable>
           );
@@ -82,6 +85,9 @@ interface CreateGameMinigamePillsProps {
 }
 
 export function CreateGameMinigamePills({ value, onChange, error }: CreateGameMinigamePillsProps) {
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateGameFormControlsStyles(colorScheme), [colorScheme]);
+
   return (
     <View style={styles.block}>
       <ScrollView
@@ -94,7 +100,7 @@ export function CreateGameMinigamePills({ value, onChange, error }: CreateGameMi
             <Pressable
               key={opt}
               onPress={() => onChange(opt)}
-              style={[styles.minigamePill, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              style={[styles.minigamePill, selected ? styles.selectedStyle : styles.unselectedStyle]}>
               <Text style={styles.minigamePillLabel}>{opt}</Text>
             </Pressable>
           );

@@ -7,10 +7,11 @@ import {
   CreateGameTypeCards,
 } from '@/components/CreateGameFormControls';
 import { CreateGameTextRow } from '@/components/CreateGameTextRow';
-import { styles } from '@/styles/components/CreateGameFormBody.styles';
+import { getCreateGameFormBodyStyles } from '@/styles/components/CreateGameFormBody.styles';
 import type { CreateGameScreenFormValues } from '@/types';
 import { MINIGAME_OPTIONS } from '@/types';
-import React from 'react';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
+import React, { useMemo } from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { Text } from 'react-native';
 
@@ -20,6 +21,9 @@ interface CreateGameFormBodyProps {
 }
 
 export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProps) {
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getCreateGameFormBodyStyles(colorScheme), [colorScheme]);
+
   return (
     <>
       <Text style={styles.screenTitle}>Create game</Text>

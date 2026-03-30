@@ -22,6 +22,9 @@ export interface EmailPasswordFormValues {
 /** Light/dark appearance for theme-aware style helpers. */
 export type ColorSchemeName = "light" | "dark";
 
+/** Theme mode override: user-selected or system default. */
+export type ThemeMode = "system" | "light" | "dark";
+
 /** Firestore `games/{gameId}` document shape (id is the document id, not stored in the doc). */
 export interface Game {
   id: string;

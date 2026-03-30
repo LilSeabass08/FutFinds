@@ -4,7 +4,8 @@
 import { GameCard } from '@/components/GameCard';
 import { GameListSurfaceFilterRow } from '@/components/GameListSurfaceFilterRow';
 import { useGames } from '@/hooks/useGames';
-import { styles } from '@/styles/screens/Home.styles';
+import { useThemeMode } from '@/hooks/ThemeModeContext';
+import { getHomeScreenStyles } from '@/styles/screens/Home.styles';
 import { Colors } from '@/styles/theme';
 import type { Game, SurfaceFilter } from '@/types';
 import { useRouter } from 'expo-router';
@@ -20,6 +21,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ListScreen() {
   const router = useRouter();
+  const { colorScheme } = useThemeMode();
+  const styles = useMemo(() => getHomeScreenStyles(colorScheme), [colorScheme]);
+  const theme = Colors[colorScheme];
+
   const [filterType, setFilterType] = useState<SurfaceFilter['type']>('all');
   const [refreshing, setRefreshing] = useState(false);
 
@@ -49,7 +54,7 @@ export default function ListScreen() {
         <Text style={styles.emptyText}>No games found</Text>
       </View>
     );
-  }, [error]);
+  }, [error, styles.emptyState, styles.emptyText]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
@@ -66,7 +71,7 @@ export default function ListScreen() {
 
       {loading ? (
         <View style={styles.centerFill}>
-          <ActivityIndicator size="large" color={Colors.light.tint} />
+          <ActivityIndicator size="large" color={theme.tint} />
         </View>
       ) : (
         <FlatList
@@ -80,7 +85,7 @@ export default function ListScreen() {
             games.length === 0 ? styles.listContentEmpty : null,
           ]}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.light.tint} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.tint} />
           }
         />
       )}
