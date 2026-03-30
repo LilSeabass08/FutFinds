@@ -1,10 +1,12 @@
 /*
  * Pressable summary card for one game: venue, schedule, capacity, and surface/type badges.
  */
-import { getGameTypeLabel, GAME_SURFACE_BADGE } from '@/constants/gameDisplay';
+import { getGameTypeLabel } from '@/lib/gameDisplay';
+import { styles } from '@/styles/components/GameCard.styles';
+import { GAME_SURFACE_BADGE } from '@/styles/theme';
 import type { Game } from '@/types';
 import React from 'react';
-import { Platform, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 export interface GameCardProps {
   game: Game;
@@ -20,7 +22,7 @@ export function GameCard({ game, onPress }: GameCardProps) {
   const surface = GAME_SURFACE_BADGE[game.surface];
   const typeLabel = getGameTypeLabel(game);
   const accessibilityLabel = `${game.title}, ${surface.label}, ${typeLabel}, ${joined} of ${cap} players${
-    isFull ? ", full" : ""
+    isFull ? ', full' : ''
   }`;
 
   return (
@@ -28,124 +30,44 @@ export function GameCard({ game, onPress }: GameCardProps) {
       activeOpacity={0.85}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
-    >
-      <View
-        style={{
-          backgroundColor: "#ffffff",
-          borderRadius: 14,
-          padding: 16,
-          marginVertical: 6,
-          ...Platform.select({
-            ios: {
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.08,
-              shadowRadius: 6,
-            },
-            android: { elevation: 3 },
-            default: {},
-          }),
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "700",
-            color: "#0f172a",
-            marginBottom: 10,
-          }}
-        >
-          {game.title}
-        </Text>
+      accessibilityLabel={accessibilityLabel}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{game.title}</Text>
 
-        <View
-          style={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 8,
-            marginBottom: 10,
-          }}
-        >
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 999,
-              backgroundColor: surface.bg,
-            }}
-          >
-            <Text
-              style={{ fontSize: 12, fontWeight: "700", color: surface.text }}
-            >
-              {surface.label}
-            </Text>
+        <View style={styles.badgeRow}>
+          <View style={[styles.surfacePill, { backgroundColor: surface.bg }]}>
+            <Text style={[styles.surfacePillText, { color: surface.text }]}>{surface.label}</Text>
           </View>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 8,
-              backgroundColor: "#f1f5f9",
-            }}
-          >
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#334155" }}>
-              {getGameTypeLabel(game)}
-            </Text>
+          <View style={styles.typePill}>
+            <Text style={styles.typePillText}>{getGameTypeLabel(game)}</Text>
           </View>
           {isFull ? (
-            <View
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 4,
-                borderRadius: 999,
-                backgroundColor: "#fee2e2",
-              }}
-            >
-              <Text
-                style={{ fontSize: 12, fontWeight: "700", color: "#b91c1c" }}
-              >
-                Full
-              </Text>
+            <View style={styles.fullPill}>
+              <Text style={styles.fullPillText}>Full</Text>
             </View>
           ) : null}
         </View>
 
-        <Text style={{ fontSize: 14, color: "#475569", marginBottom: 4 }}>
+        <Text style={styles.meta}>
           📍 {game.fieldName} · {game.address}
         </Text>
-        <Text style={{ fontSize: 14, color: "#475569", marginBottom: 12 }}>
+        <Text style={styles.metaLast}>
           🗓 {game.date} · {game.time}
         </Text>
 
         {!isFull ? (
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "600",
-              color: "#0f172a",
-              marginBottom: 8,
-            }}
-          >
+          <Text style={styles.playersLine}>
             {joined} / {cap} players
           </Text>
         ) : null}
 
-        <View
-          style={{
-            height: 6,
-            borderRadius: 3,
-            backgroundColor: "#e2e8f0",
-            overflow: "hidden",
-          }}
-        >
+        <View style={styles.track}>
           <View
-            style={{
-              height: "100%",
-              width: `${fillRatio * 100}%`,
-              borderRadius: 3,
-              backgroundColor: isFull ? "#94a3b8" : "#22c55e",
-            }}
+            style={[
+              styles.fill,
+              isFull ? styles.fillFull : styles.fillOpen,
+              { width: `${fillRatio * 100}%` },
+            ]}
           />
         </View>
       </View>

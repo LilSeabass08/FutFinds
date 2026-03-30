@@ -4,6 +4,8 @@
 import { GameCard } from '@/components/GameCard';
 import { GameListSurfaceFilterRow } from '@/components/GameListSurfaceFilterRow';
 import { useGames } from '@/hooks/useGames';
+import { styles } from '@/styles/screens/Home.styles';
+import { Colors } from '@/styles/theme';
 import type { Game, SurfaceFilter } from '@/types';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -43,46 +45,42 @@ export default function ListScreen() {
       return null;
     }
     return (
-      <View style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 48 }}>
-        <Text style={{ fontSize: 16, color: '#64748b' }}>No games found</Text>
+      <View style={styles.emptyState}>
+        <Text style={styles.emptyText}>No games found</Text>
       </View>
     );
   }, [error]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f0fdf4' }} edges={['top']}>
-      <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
-        <Text style={{ fontSize: 26, fontWeight: '800', color: '#0f172a', marginBottom: 4 }}>
-          FutFinds
-        </Text>
+    <SafeAreaView style={styles.safe} edges={['top']}>
+      <View style={styles.header}>
+        <Text style={styles.title}>FutFinds</Text>
         <GameListSurfaceFilterRow active={filterType} onChange={setFilterType} />
       </View>
 
       {error ? (
-        <View style={{ paddingHorizontal: 16, marginBottom: 8 }}>
-          <Text style={{ color: '#b91c1c', textAlign: 'center' }}>{error}</Text>
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : null}
 
       {loading ? (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <ActivityIndicator size="large" color="#15803d" />
+        <View style={styles.centerFill}>
+          <ActivityIndicator size="large" color={Colors.light.tint} />
         </View>
       ) : (
         <FlatList
-          style={{ flex: 1 }}
+          style={styles.list}
           data={games}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
           ListEmptyComponent={listEmpty}
-          contentContainerStyle={{
-            flexGrow: 1,
-            paddingHorizontal: 16,
-            paddingBottom: 24,
-            ...(games.length === 0 ? { justifyContent: 'center' } : {}),
-          }}
+          contentContainerStyle={[
+            styles.listContent,
+            games.length === 0 ? styles.listContentEmpty : null,
+          ]}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#15803d" />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.light.tint} />
           }
         />
       )}

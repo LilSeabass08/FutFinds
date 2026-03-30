@@ -7,13 +7,12 @@ import {
   CreateGameTypeCards,
 } from '@/components/CreateGameFormControls';
 import { CreateGameTextRow } from '@/components/CreateGameTextRow';
+import { styles } from '@/styles/components/CreateGameFormBody.styles';
 import type { CreateGameScreenFormValues } from '@/types';
 import { MINIGAME_OPTIONS } from '@/types';
 import React from 'react';
 import { Control, Controller } from 'react-hook-form';
 import { Text } from 'react-native';
-
-const labelStyle = { fontWeight: '600' as const, marginBottom: 6, color: '#374151' };
 
 interface CreateGameFormBodyProps {
   control: Control<CreateGameScreenFormValues>;
@@ -23,9 +22,7 @@ interface CreateGameFormBodyProps {
 export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProps) {
   return (
     <>
-      <Text style={{ fontSize: 22, fontWeight: '700', marginBottom: 16, color: '#111827' }}>
-        Create game
-      </Text>
+      <Text style={styles.screenTitle}>Create game</Text>
 
       <CreateGameTextRow
         control={control}
@@ -35,7 +32,7 @@ export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProp
         rules={{ required: 'Title is required' }}
       />
 
-      <Text style={labelStyle}>Surface type</Text>
+      <Text style={styles.fieldLabel}>Surface type</Text>
       <Controller
         control={control}
         name="surface"
@@ -103,7 +100,7 @@ export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProp
         textInputProps={{ keyboardType: 'number-pad' }}
       />
 
-      <Text style={labelStyle}>Game type</Text>
+      <Text style={styles.fieldLabel}>Game type</Text>
       <Controller
         control={control}
         name="type"
@@ -117,7 +114,7 @@ export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProp
 
       {gameType === 'minigame' ? (
         <>
-          <Text style={labelStyle}>Minigame type</Text>
+          <Text style={styles.fieldLabel}>Minigame type</Text>
           <Controller
             control={control}
             name="minigameType"

@@ -2,7 +2,7 @@
  * This file defines the bottom tab navigation used in Phase 1.
  * It connects the main FutFinds screens: list, map, create, and account.
  */
-import { Colors } from '@/constants/theme';
+import { Colors } from '@/styles/theme';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { useColorScheme } from 'react-native';

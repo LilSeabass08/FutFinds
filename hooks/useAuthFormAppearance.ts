@@ -1,7 +1,7 @@
 /*
- * Subscribes to color scheme and returns auth form styles from constants/authFormStyles.
+ * Subscribes to color scheme and returns auth form styles from styles/screens/auth.
  */
-import { getAuthFormStyles } from '@/constants/authFormStyles';
+import { getAuthFormStyles } from '@/styles/screens/auth/AuthForm.styles';
 import type { ColorSchemeName } from '@/types';
 import { useMemo } from 'react';
 import { useColorScheme } from 'react-native';

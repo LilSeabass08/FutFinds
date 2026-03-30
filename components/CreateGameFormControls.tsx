@@ -1,20 +1,15 @@
 /*
  * Surface pills, game-type cards, and minigame option pills for the Create Game screen.
  */
+import {
+  PILL_SELECTED,
+  PILL_UNSELECTED,
+  styles,
+} from '@/styles/components/CreateGameFormControls.styles';
 import type { CreateGameScreenFormValues, Game } from '@/types';
 import { MINIGAME_OPTIONS } from '@/types';
 import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-
-const SELECTED = {
-  borderColor: '#22c55e',
-  backgroundColor: 'rgba(34, 197, 94, 0.18)',
-} as const;
-
-const UNSELECTED = {
-  borderColor: '#d1d5db',
-  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-} as const;
 
 const SURFACE_OPTIONS: { value: Game['surface']; label: string }[] = [
   { value: 'outdoor', label: 'Outdoor' },
@@ -30,27 +25,21 @@ interface CreateGameSurfacePillsProps {
 
 export function CreateGameSurfacePills({ value, onChange, error }: CreateGameSurfacePillsProps) {
   return (
-    <View style={{ marginBottom: 12 }}>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+    <View style={styles.block}>
+      <View style={styles.rowWrap}>
         {SURFACE_OPTIONS.map((opt) => {
           const selected = value === opt.value;
           return (
             <Pressable
               key={opt.value}
               onPress={() => onChange(opt.value)}
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 16,
-                borderRadius: 999,
-                borderWidth: 2,
-                ...(selected ? SELECTED : UNSELECTED),
-              }}>
-              <Text style={{ fontWeight: '600', color: '#111827' }}>{opt.label}</Text>
+              style={[styles.surfacePill, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              <Text style={styles.surfacePillLabel}>{opt.label}</Text>
             </Pressable>
           );
         })}
       </View>
-      {error ? <Text style={{ color: '#b91c1c', marginTop: 6, fontSize: 13 }}>{error}</Text> : null}
+      {error ? <Text style={styles.fieldError}>{error}</Text> : null}
     </View>
   );
 }
@@ -67,30 +56,21 @@ export function CreateGameTypeCards({ value, onChange, error }: CreateGameTypeCa
     { value: 'minigame', label: 'Minigame' },
   ];
   return (
-    <View style={{ marginBottom: 12 }}>
-      <View style={{ flexDirection: 'row', gap: 10 }}>
+    <View style={styles.block}>
+      <View style={styles.row}>
         {cards.map((opt) => {
           const selected = value === opt.value;
           return (
             <Pressable
               key={opt.value}
               onPress={() => onChange(opt.value)}
-              style={{
-                flex: 1,
-                minHeight: 88,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 12,
-                borderWidth: 2,
-                padding: 12,
-                ...(selected ? SELECTED : UNSELECTED),
-              }}>
-              <Text style={{ fontSize: 17, fontWeight: '700', color: '#111827' }}>{opt.label}</Text>
+              style={[styles.typeCard, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              <Text style={styles.typeCardLabel}>{opt.label}</Text>
             </Pressable>
           );
         })}
       </View>
-      {error ? <Text style={{ color: '#b91c1c', marginTop: 6, fontSize: 13 }}>{error}</Text> : null}
+      {error ? <Text style={styles.fieldError}>{error}</Text> : null}
     </View>
   );
 }
@@ -103,27 +83,24 @@ interface CreateGameMinigamePillsProps {
 
 export function CreateGameMinigamePills({ value, onChange, error }: CreateGameMinigamePillsProps) {
   return (
-    <View style={{ marginBottom: 12 }}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8 }}>
+    <View style={styles.block}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.minigameScroll}>
         {MINIGAME_OPTIONS.map((opt) => {
           const selected = value === opt;
           return (
             <Pressable
               key={opt}
               onPress={() => onChange(opt)}
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 14,
-                borderRadius: 999,
-                borderWidth: 2,
-                ...(selected ? SELECTED : UNSELECTED),
-              }}>
-              <Text style={{ fontWeight: '600', color: '#111827' }}>{opt}</Text>
+              style={[styles.minigamePill, selected ? PILL_SELECTED : PILL_UNSELECTED]}>
+              <Text style={styles.minigamePillLabel}>{opt}</Text>
             </Pressable>
           );
         })}
       </ScrollView>
-      {error ? <Text style={{ color: '#b91c1c', marginTop: 6, fontSize: 13 }}>{error}</Text> : null}
+      {error ? <Text style={styles.fieldError}>{error}</Text> : null}
     </View>
   );
 }

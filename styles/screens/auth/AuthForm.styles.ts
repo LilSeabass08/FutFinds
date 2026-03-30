@@ -1,12 +1,10 @@
-/*
- * Composed StyleSheet-like objects for login and signup screens.
- * Uses palette from theme.ts; import this file when adjusting auth layout or colors.
+/**
+ * Theme-aware styles for login and signup screens (shared with useAuthFormAppearance).
  */
-import { Colors } from '@/constants/theme';
+import { Colors } from '@/styles/theme';
 import type { ColorSchemeName } from '@/types';
 import { Platform } from 'react-native';
 
-/** All styles and extras needed by auth form screens (login / signup). */
 export function getAuthFormStyles(colorScheme: ColorSchemeName) {
   const c = Colors[colorScheme];
   const isDark = colorScheme === 'dark';

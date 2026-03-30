@@ -1,6 +1,11 @@
 /*
  * Horizontal scrollable surface filter pills for the games list (All | Outdoor | Indoor | Futsal).
  */
+import {
+  FILTER_PILL_ACTIVE,
+  FILTER_PILL_INACTIVE,
+  styles,
+} from '@/styles/components/GameListSurfaceFilterRow.styles';
 import type { SurfaceFilter } from '@/types';
 import React from 'react';
 import { Pressable, ScrollView, Text } from 'react-native';
@@ -17,40 +22,24 @@ const OPTIONS: { value: SurfaceFilter['type']; label: string }[] = [
   { value: 'futsal', label: 'Futsal' },
 ];
 
-const ACTIVE = {
-  borderColor: '#16a34a',
-  backgroundColor: 'rgba(34, 197, 94, 0.2)',
-} as const;
-
-const INACTIVE = {
-  borderColor: '#d1d5db',
-  backgroundColor: '#ffffff',
-} as const;
-
 export function GameListSurfaceFilterRow({ active, onChange }: GameListSurfaceFilterRowProps) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ gap: 8, paddingVertical: 4, paddingBottom: 12 }}>
+      contentContainerStyle={styles.scrollContent}>
       {OPTIONS.map((opt) => {
         const isActive = active === opt.value;
         return (
           <Pressable
             key={opt.value}
             onPress={() => onChange(opt.value)}
-            style={{
-              paddingVertical: 8,
-              paddingHorizontal: 14,
-              borderRadius: 999,
-              borderWidth: 2,
-              ...(isActive ? ACTIVE : INACTIVE),
-            }}>
+            style={[styles.pill, isActive ? FILTER_PILL_ACTIVE : FILTER_PILL_INACTIVE]}>
             <Text
-              style={{
-                fontWeight: '600',
-                color: isActive ? '#15803d' : '#374151',
-              }}>
+              style={[
+                styles.pillLabel,
+                isActive ? styles.pillLabelActive : styles.pillLabelInactive,
+              ]}>
               {opt.label}
             </Text>
           </Pressable>

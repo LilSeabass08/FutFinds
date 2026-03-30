@@ -4,6 +4,7 @@
 import { CreateGameFormBody } from '@/components/CreateGameFormBody';
 import { createGame } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
+import { styles } from '@/styles/screens/Create.styles';
 import type { CreateGameFormData, CreateGameScreenFormValues } from '@/types';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -99,36 +100,27 @@ export default function CreateScreen() {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f9fafb' }} edges={['top']}>
+    <SafeAreaView style={styles.safe} edges={['top']}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <ScrollView
-          contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled">
           <CreateGameFormBody control={control} gameType={gameType} />
 
           <Pressable
-            style={{
-              marginTop: 8,
-              backgroundColor: '#16a34a',
-              paddingVertical: 14,
-              borderRadius: 10,
-              alignItems: 'center',
-              opacity: formState.isSubmitting ? 0.85 : 1,
-            }}
+            style={[styles.submitButton, formState.isSubmitting && styles.submitButtonBusy]}
             onPress={onSubmit}
             disabled={formState.isSubmitting}>
             {formState.isSubmitting ? (
               <ActivityIndicator color="#fff" />
             ) : (
-              <Text style={{ color: '#fff', fontWeight: '700', fontSize: 16 }}>Post Game</Text>
+              <Text style={styles.submitLabel}>Post Game</Text>
             )}
           </Pressable>
 
-          {submitError ? (
-            <Text style={{ color: '#b91c1c', marginTop: 12, textAlign: 'center' }}>{submitError}</Text>
-          ) : null}
+          {submitError ? <Text style={styles.submitError}>{submitError}</Text> : null}
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

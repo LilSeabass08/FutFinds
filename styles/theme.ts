@@ -1,11 +1,8 @@
 /**
- * FutFinds palette: pitch greens, clean whites, and a bright “jersey” accent for energy.
- * Light mode reads like sun on a field; dark mode reads like night under stadium lights.
- *
- * Related: composed screen styles live next to this file — `authFormStyles.ts`, `accountScreenStyles.ts`.
- * Navigation chrome colors: `NavigationTheme` below.
+ * Global design tokens: navigation themes, fonts, and shared UI colors.
+ * Composed screen styles live under styles/screens/; component styles under styles/components/.
  */
-
+import type { Game } from '@/types';
 import { DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { Platform } from 'react-native';
 
@@ -44,6 +41,16 @@ export const Colors = {
   },
 };
 
+/** Surface badge colors for game cards and detail (shared across list + detail). */
+export const GAME_SURFACE_BADGE: Record<
+  Game['surface'],
+  { label: string; bg: string; text: string }
+> = {
+  outdoor: { label: 'Outdoor', bg: '#dcfce7', text: '#15803d' },
+  indoor: { label: 'Indoor', bg: '#dbeafe', text: '#1d4ed8' },
+  futsal: { label: 'Futsal', bg: '#ffedd5', text: '#c2410c' },
+};
+
 /** React Navigation themes for stack headers (e.g. game detail). */
 export const NavigationTheme = {
   light: {
@@ -74,13 +81,9 @@ export const NavigationTheme = {
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {
@@ -96,3 +99,30 @@ export const Fonts = Platform.select({
     mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 });
+
+/** Static tokens for screens not yet driven by color scheme. */
+export const palette = {
+  slate50: '#f8fafc',
+  slate100: '#f1f5f9',
+  slate200: '#e2e8f0',
+  slate300: '#cbd5e1',
+  slate400: '#94a3b8',
+  slate500: '#64748b',
+  slate600: '#475569',
+  slate700: '#334155',
+  slate900: '#0f172a',
+  gray50: '#f9fafb',
+  gray200: '#e5e7eb',
+  gray400: '#9ca3af',
+  gray500: '#6b7280',
+  gray600: '#4b5563',
+  gray700: '#374151',
+  gray900: '#111827',
+  red600: '#dc2626',
+  red700: '#b91c1c',
+  green500: '#22c55e',
+  green600: '#16a34a',
+  green700: '#15803d',
+  white: '#ffffff',
+  black: '#000000',
+} as const;

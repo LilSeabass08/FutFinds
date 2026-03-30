@@ -1,10 +1,10 @@
 /*
  * Account tab: profile from Firestore, stats, and sign-out.
  */
-import { getAccountScreenStyles } from '@/constants/accountScreenStyles';
 import { signOutUser } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
 import { useUser } from '@/hooks/useUser';
+import { getAccountScreenStyles } from '@/styles/screens/Account.styles';
 import type { ColorSchemeName } from '@/types';
 import React, { useMemo, useState } from 'react';
 import {
@@ -27,7 +27,7 @@ function displayInitial(name: string): string {
 export default function AccountScreen() {
   const colorScheme = (useColorScheme() ?? 'light') as ColorSchemeName;
 
-  const styles = useMemo(() => getAccountScreenStyles(colorScheme), [colorScheme]);
+  const screenStyles = useMemo(() => getAccountScreenStyles(colorScheme), [colorScheme]);
 
   const { user } = useAuth();
   const { userData, loading } = useUser(user?.uid);
@@ -57,42 +57,42 @@ export default function AccountScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top']}>
-      <View style={styles.container}>
-        <View style={styles.headerBlock}>
-          <Text style={styles.displayName}>{displayName}</Text>
-          <View style={styles.avatarCircle}>
+    <SafeAreaView style={screenStyles.safe} edges={['top']}>
+      <View style={screenStyles.container}>
+        <View style={screenStyles.headerBlock}>
+          <Text style={screenStyles.displayName}>{displayName}</Text>
+          <View style={screenStyles.avatarCircle}>
             {loading ? (
-              <ActivityIndicator color={styles.avatarActivityIndicatorColor} />
+              <ActivityIndicator color={screenStyles.avatarActivityIndicatorColor} />
             ) : (
-              <Text style={styles.avatarInitial}>{displayInitial(displayName)}</Text>
+              <Text style={screenStyles.avatarInitial}>{displayInitial(displayName)}</Text>
             )}
           </View>
         </View>
 
-        <View style={styles.statsBlock}>
-          <View style={styles.statRow}>
-            <Text style={styles.statLabel}>Games Created</Text>
-            <Text style={styles.statValue}>{loading ? '—' : String(gamesCreated)}</Text>
+        <View style={screenStyles.statsBlock}>
+          <View style={screenStyles.statRow}>
+            <Text style={screenStyles.statLabel}>Games Created</Text>
+            <Text style={screenStyles.statValue}>{loading ? '—' : String(gamesCreated)}</Text>
           </View>
-          <View style={[styles.statRow, styles.statRowDivider]}>
-            <Text style={styles.statLabel}>Games Joined</Text>
-            <Text style={styles.statValue}>{loading ? '—' : String(gamesJoined)}</Text>
+          <View style={[screenStyles.statRow, screenStyles.statRowDivider]}>
+            <Text style={screenStyles.statLabel}>Games Joined</Text>
+            <Text style={screenStyles.statValue}>{loading ? '—' : String(gamesJoined)}</Text>
           </View>
         </View>
 
-        <View style={styles.spacer} />
+        <View style={screenStyles.spacer} />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        {error ? <Text style={screenStyles.error}>{error}</Text> : null}
 
         <Pressable
-          style={[styles.button, signingOut && styles.buttonDisabled]}
+          style={[screenStyles.button, signingOut && screenStyles.buttonDisabled]}
           onPress={onSignOut}
           disabled={signingOut}>
           {signingOut ? (
-            <ActivityIndicator color={styles.activityIndicatorColor} />
+            <ActivityIndicator color={screenStyles.activityIndicatorColor} />
           ) : (
-            <Text style={styles.buttonText}>Sign Out</Text>
+            <Text style={screenStyles.buttonText}>Sign Out</Text>
           )}
         </Pressable>
       </View>

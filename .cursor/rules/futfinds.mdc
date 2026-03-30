@@ -1,0 +1,143 @@
+---
+description: "FutFinds project coding rules"
+alwaysApply: true
+---
+
+# FutFinds — Cursor Rules
+
+## Project Overview
+
+FutFinds is a React Native (Expo) soccer meetup app. Users can create, view, and join local soccer games at fields in their area.
+
+## Tech Stack
+
+- Frontend: React Native with Expo (SDK 51+), using Expo Router for file-based navigation
+- Backend/DB: Firebase (Firestore + Auth + Cloud Functions)
+- Language: TypeScript (strict mode)
+- Forms: react-hook-form
+- Maps: react-native-maps with Google Maps
+- Date handling: date-fns
+
+## Code Style Rules
+
+- Always use TypeScript. Never use plain .js files for source code.
+- Always use functional components with hooks. Never use class components.
+- Always define prop types using TypeScript interfaces, not inline types.
+- Always use named exports for components, not default exports (exception: Expo Router screens use default exports).
+- Use `const` over `let` wherever possible.
+- Keep components under 150 lines. Split into smaller components if larger.
+- Put all Firebase logic in /firebase/ helper files, never directly in components.
+- Put all TypeScript types/interfaces in /types/index.ts.
+
+## Styling Rules
+
+- **Never define styles inside component or screen files.** All `StyleSheet.create()` calls must live in `/styles/`.
+- Each component or screen gets its own dedicated stylesheet file. Example: `GameCard.tsx` → `styles/GameCard.styles.ts`.
+- Screen-level stylesheets follow the same pattern: `app/(tabs)/index.tsx` → `styles/screens/Home.styles.ts`.
+- Import styles into the component using a named import: `import { styles } from '@/styles/GameCard.styles';`
+- Shared/global style tokens (colors, spacing, typography, border radii) belong in `styles/theme.ts` — import from there rather than hardcoding values.
+- Never use inline styles (the `style={{ ... }}` prop) except for truly dynamic values that depend on runtime state (e.g. calculated widths, animated values).
+
+## Folder Structure
+
+```
+FutFinds/
+├── app/                        # Expo Router screens (default exports)
+│   ├── (tabs)/
+│   │   ├── index.tsx           # List view (Home)
+│   │   ├── map.tsx             # Map view
+│   │   ├── create.tsx          # Create game
+│   │   └── account.tsx         # Account/profile
+│   ├── game/[id].tsx           # Game detail screen
+│   └── auth/                   # Login/signup screens
+│       ├── login.tsx
+│       └── signup.tsx
+│
+├── components/                 # Reusable UI components (named exports)
+│
+├── firebase/                   # Firebase config and helper functions
+│
+├── hooks/                      # Custom React hooks (e.g. useGames, useAuth)
+│
+├── types/                      # TypeScript interfaces
+│   └── index.ts
+│
+├── styles/                     # All stylesheets — never put styles elsewhere
+│   ├── theme.ts                # Global design tokens: colors, spacing, typography
+│   ├── components/             # One stylesheet per component
+│   │   ├── GameCard.styles.ts
+│   │   ├── GameForm.styles.ts
+│   │   └── ...
+│   └── screens/                # One stylesheet per screen
+│       ├── Home.styles.ts
+│       ├── Map.styles.ts
+│       ├── Create.styles.ts
+│       ├── Account.styles.ts
+│       ├── GameDetail.styles.ts
+│       └── auth/
+│           ├── Login.styles.ts
+│           └── Signup.styles.ts
+│
+└── assets/                     # Images, fonts, icons
+```
+
+## Firebase Rules
+
+- Always access Firestore through helper functions in /firebase/, never call firebase directly from a screen.
+- Always check for authenticated user before any Firestore read/write.
+- Use real-time listeners (onSnapshot) for game lists. Use one-time gets (getDoc) for single game detail.
+
+## Firestore Data Models
+
+### Game Document (`games/{gameId}`)
+
+```ts
+{
+  title: string
+  type: "scrimmage" | "minigame"
+  minigameType: string | null        // e.g. "World Cup", "Wembley", "3hit kill"
+  surface: "outdoor" | "indoor" | "futsal"
+  fieldName: string
+  location: { lat: number, lng: number }
+  address: string
+  date: string                       // ISO format "YYYY-MM-DD"
+  time: string                       // "6:00 PM"
+  playersMax: number
+  playersJoined: string[]            // array of userIds
+  createdBy: string                  // userId
+  createdAt: Timestamp
+}
+```
+
+### User Document (`users/{userId}`)
+
+```ts
+{
+  displayName: string;
+  avatar: string | null;
+  location: string;
+  gamesCreated: number;
+  gamesJoined: number;
+}
+```
+
+## Naming Conventions
+
+- Components: PascalCase filename, e.g. `GameCard.tsx`
+- Component stylesheets: PascalCase + `.styles.ts`, e.g. `GameCard.styles.ts`
+- Screen stylesheets: PascalCase + `.styles.ts`, e.g. `Home.styles.ts`
+- Hooks: camelCase prefixed with "use", e.g. `useGames.ts`
+- Firebase helpers: camelCase, e.g. `createGame.ts`, `getGames.ts`
+- Types: PascalCase interfaces, e.g. `Game`, `AppUser`
+
+## AI Behavior Rules
+
+- When generating a new component, always include TypeScript types **and** create a matching `.styles.ts` file in `/styles/components/`.
+- When generating a new screen, always create a matching `.styles.ts` file in `/styles/screens/`.
+- Never put `StyleSheet.create()` inside a component or screen file — always in the matching styles file.
+- When writing Firebase functions, always include error handling with try/catch.
+- When asked to build a screen, scaffold the full screen with placeholder UI — don't leave empty functions.
+- Never install new packages without mentioning it explicitly with the exact install command.
+- Always add a comment block at the top of each new file describing what it does.
+- If something requires a .env variable (e.g. API keys), flag it clearly with a TODO comment.
+- When suggesting changes, only touch the files relevant to the task. Do not refactor unrelated code.

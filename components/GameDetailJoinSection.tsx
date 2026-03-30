@@ -1,6 +1,7 @@
 /*
  * Join / leave / full / creator messaging for the game detail screen.
  */
+import { styles } from '@/styles/components/GameDetailJoinSection.styles';
 import type { Game } from '@/types';
 import React from 'react';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
@@ -25,11 +26,7 @@ export function GameDetailJoinSection({
   const isFull = game.playersJoined.length >= game.playersMax;
 
   if (isCreator) {
-    return (
-      <Text style={{ fontSize: 14, color: '#64748b', fontStyle: 'italic', marginTop: 8 }}>
-        You created this game
-      </Text>
-    );
+    return <Text style={styles.creatorNote}>You created this game</Text>;
   }
 
   if (isJoined) {
@@ -37,20 +34,11 @@ export function GameDetailJoinSection({
       <Pressable
         onPress={onLeave}
         disabled={pending}
-        style={{
-          marginTop: 12,
-          paddingVertical: 14,
-          borderRadius: 10,
-          borderWidth: 2,
-          borderColor: '#dc2626',
-          backgroundColor: '#fff',
-          alignItems: 'center',
-          opacity: pending ? 0.7 : 1,
-        }}>
+        style={[styles.leaveButton, pending && styles.leaveButtonPending]}>
         {pending ? (
           <ActivityIndicator color="#dc2626" />
         ) : (
-          <Text style={{ fontSize: 16, fontWeight: '700', color: '#dc2626' }}>Leave Game</Text>
+          <Text style={styles.leaveText}>Leave Game</Text>
         )}
       </Pressable>
     );
@@ -58,36 +46,26 @@ export function GameDetailJoinSection({
 
   if (isFull) {
     return (
-      <Pressable
-        disabled
-        style={{
-          marginTop: 12,
-          paddingVertical: 14,
-          borderRadius: 10,
-          backgroundColor: '#e5e7eb',
-          alignItems: 'center',
-        }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#9ca3af' }}>Game Full</Text>
+      <Pressable disabled style={styles.fullButton}>
+        <Text style={styles.fullText}>Game Full</Text>
       </Pressable>
     );
   }
 
+  const joinDisabled = pending || !userId;
+
   return (
     <Pressable
       onPress={onJoin}
-      disabled={pending || !userId}
-      style={{
-        marginTop: 12,
-        paddingVertical: 14,
-        borderRadius: 10,
-        backgroundColor: pending || !userId ? '#86efac' : '#16a34a',
-        alignItems: 'center',
-        opacity: pending || !userId ? 0.85 : 1,
-      }}>
+      disabled={joinDisabled}
+      style={[
+        styles.joinButton,
+        joinDisabled ? styles.joinButtonDisabled : styles.joinButtonEnabled,
+      ]}>
       {pending ? (
         <ActivityIndicator color="#fff" />
       ) : (
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>Join Game</Text>
+        <Text style={styles.joinText}>Join Game</Text>
       )}
     </Pressable>
   );

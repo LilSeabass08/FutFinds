@@ -2,9 +2,11 @@
  * Game detail: load by route id, show info, join/leave with Firestore helpers.
  */
 import { GameDetailJoinSection } from '@/components/GameDetailJoinSection';
-import { getGameTypeLabel, GAME_SURFACE_BADGE } from '@/constants/gameDisplay';
 import { getGameById, joinGame, leaveGame } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
+import { getGameTypeLabel } from '@/lib/gameDisplay';
+import { styles } from '@/styles/screens/GameDetail.styles';
+import { Colors, GAME_SURFACE_BADGE } from '@/styles/theme';
 import type { Game } from '@/types';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams } from 'expo-router';
@@ -124,19 +126,17 @@ export default function GameDetailScreen() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0fdf4' }}>
-        <ActivityIndicator size="large" color="#15803d" />
+      <View style={styles.loadingRoot}>
+        <ActivityIndicator size="large" color={Colors.light.tint} />
       </View>
     );
   }
 
   if (loadError || !game) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#f0fdf4' }} edges={['bottom']}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 }}>
-          <Text style={{ fontSize: 16, color: '#b91c1c', textAlign: 'center' }}>
-            {loadError ?? 'Game not found.'}
-          </Text>
+      <SafeAreaView style={styles.safe} edges={['bottom']}>
+        <View style={styles.errorCenter}>
+          <Text style={styles.errorText}>{loadError ?? 'Game not found.'}</Text>
         </View>
       </SafeAreaView>
     );
@@ -146,72 +146,48 @@ export default function GameDetailScreen() {
   const joined = game.playersJoined.length;
   const cap = game.playersMax;
   const fillRatio = cap > 0 ? Math.min(joined / cap, 1) : 0;
+  const isFull = joined >= cap;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f0fdf4' }} edges={['bottom']}>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
-        <Text style={{ fontSize: 26, fontWeight: '800', color: '#0f172a', marginBottom: 12 }}>
-          {game.title}
-        </Text>
+    <SafeAreaView style={styles.safe} edges={['bottom']}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        <Text style={styles.gameTitle}>{game.title}</Text>
 
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 }}>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 999,
-              backgroundColor: surface.bg,
-            }}>
-            <Text style={{ fontSize: 12, fontWeight: '700', color: surface.text }}>{surface.label}</Text>
+        <View style={styles.badgeRow}>
+          <View style={[styles.surfacePill, { backgroundColor: surface.bg }]}>
+            <Text style={[styles.surfacePillText, { color: surface.text }]}>{surface.label}</Text>
           </View>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 4,
-              borderRadius: 8,
-              backgroundColor: '#f1f5f9',
-            }}>
-            <Text style={{ fontSize: 12, fontWeight: '600', color: '#334155' }}>{getGameTypeLabel(game)}</Text>
+          <View style={styles.typePill}>
+            <Text style={styles.typePillText}>{getGameTypeLabel(game)}</Text>
           </View>
         </View>
 
-        <Text style={{ fontSize: 15, color: '#475569', marginBottom: 8 }}>
+        <Text style={styles.meta}>
           📍 {game.fieldName}, {game.address}
         </Text>
-        <Text style={{ fontSize: 15, color: '#475569', marginBottom: 20 }}>
+        <Text style={styles.metaSpaced}>
           🗓 {game.date} · {game.time}
         </Text>
 
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#0f172a', marginBottom: 8 }}>Players</Text>
-        <Text style={{ fontSize: 15, fontWeight: '600', color: '#334155', marginBottom: 8 }}>
+        <Text style={styles.sectionTitle}>Players</Text>
+        <Text style={styles.playersSummary}>
           {joined} / {cap} players joined
         </Text>
 
-        <View style={{ height: 8, borderRadius: 4, backgroundColor: '#e2e8f0', overflow: 'hidden', marginBottom: 16 }}>
+        <View style={styles.progressTrack}>
           <View
-            style={{
-              height: '100%',
-              width: `${fillRatio * 100}%`,
-              borderRadius: 4,
-              backgroundColor: joined >= cap ? '#94a3b8' : '#22c55e',
-            }}
+            style={[
+              styles.progressFill,
+              isFull ? styles.progressFillFull : styles.progressFillOpen,
+              { width: `${fillRatio * 100}%` },
+            ]}
           />
         </View>
 
-        <Text style={{ fontSize: 14, fontWeight: '600', color: '#64748b', marginBottom: 8 }}>Joined</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 8 }}>
+        <Text style={styles.joinedHeading}>Joined</Text>
+        <View style={styles.joinedRow}>
           {game.playersJoined.map((playerId) => (
-            <View
-              key={playerId}
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: '#e2e8f0',
-                borderWidth: 2,
-                borderColor: '#cbd5e1',
-              }}
-            />
+            <View key={playerId} style={styles.playerAvatar} />
           ))}
         </View>
 
@@ -223,9 +199,7 @@ export default function GameDetailScreen() {
           onLeave={onLeave}
         />
 
-        {actionError ? (
-          <Text style={{ color: '#b91c1c', marginTop: 12, textAlign: 'center' }}>{actionError}</Text>
-        ) : null}
+        {actionError ? <Text style={styles.actionError}>{actionError}</Text> : null}
       </ScrollView>
     </SafeAreaView>
   );

@@ -11,7 +11,7 @@ import { useColorScheme } from 'react-native';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { NavigationTheme } from '@/constants/theme';
+import { NavigationTheme } from '@/styles/theme';
 import { AuthProvider, useAuth } from '@/hooks/AuthContext';
 
 SplashScreen.preventAutoHideAsync();

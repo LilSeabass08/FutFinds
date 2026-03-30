@@ -1,8 +1,7 @@
-/*
- * Composed styles for the Account tab screen.
- * Uses palette from theme.ts.
+/**
+ * Theme-aware styles for the Account tab screen.
  */
-import { Colors } from '@/constants/theme';
+import { Colors } from '@/styles/theme';
 import type { ColorSchemeName } from '@/types';
 
 export function getAccountScreenStyles(colorScheme: ColorSchemeName) {
