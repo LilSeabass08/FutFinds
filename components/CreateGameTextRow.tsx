@@ -8,13 +8,16 @@ import React, { useMemo } from 'react';
 import { Control, Controller, FieldPath, RegisterOptions } from 'react-hook-form';
 import { Text, TextInput, TextInputProps, View } from 'react-native';
 
+/** Text inputs only — date/time use pickers and store `Date | null`. */
+type CreateGameTextFieldPath = Exclude<FieldPath<CreateGameScreenFormValues>, 'date' | 'time'>;
+
 interface CreateGameTextRowProps {
   control: Control<CreateGameScreenFormValues>;
-  name: FieldPath<CreateGameScreenFormValues>;
+  name: CreateGameTextFieldPath;
   label: string;
   hint?: string;
   placeholder: string;
-  rules?: RegisterOptions<CreateGameScreenFormValues, FieldPath<CreateGameScreenFormValues>>;
+  rules?: RegisterOptions<CreateGameScreenFormValues, CreateGameTextFieldPath>;
   textInputProps?: Omit<TextInputProps, 'value' | 'onChangeText' | 'onBlur' | 'style'>;
 }
 

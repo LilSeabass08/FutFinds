@@ -12,6 +12,7 @@ export {
 export { getFirestoreDb } from './firestore';
 export {
   createGame,
+  deleteGame,
   getGameById,
   getGamesListener,
   joinGame,

@@ -65,8 +65,8 @@ export interface CreateGameScreenFormValues {
   surface: "" | Game["surface"];
   fieldName: string;
   address: string;
-  date: string;
-  time: string;
+  date: Date | null;
+  time: Date | null;
   playersMax: string;
   type: "" | Game["type"];
   minigameType: string;

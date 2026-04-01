@@ -6,6 +6,10 @@ import {
   CreateGameSurfacePills,
   CreateGameTypeCards,
 } from '@/components/CreateGameFormControls';
+import {
+  CreateGameDatePickerField,
+  CreateGameTimePickerField,
+} from '@/components/CreateGameDateAndTimePickers';
 import { CreateGameTextRow } from '@/components/CreateGameTextRow';
 import { getCreateGameFormBodyStyles } from '@/styles/components/CreateGameFormBody.styles';
 import type { CreateGameScreenFormValues } from '@/types';
@@ -64,24 +68,9 @@ export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProp
         rules={{ required: 'Address is required' }}
       />
 
-      <CreateGameTextRow
-        control={control}
-        name="date"
-        label="Date"
-        hint="Format: YYYY-MM-DD"
-        placeholder="2026-03-28"
-        rules={{ required: 'Date is required' }}
-        textInputProps={{ autoCapitalize: 'none' }}
-      />
+      <CreateGameDatePickerField control={control} />
 
-      <CreateGameTextRow
-        control={control}
-        name="time"
-        label="Time"
-        hint="e.g. 6:00 PM"
-        placeholder="6:00 PM"
-        rules={{ required: 'Time is required' }}
-      />
+      <CreateGameTimePickerField control={control} />
 
       <CreateGameTextRow
         control={control}

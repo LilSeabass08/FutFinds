@@ -1,7 +1,7 @@
 /**
  * Game detail screen layout, badges, and player list.
  */
-import { Colors } from '@/styles/theme';
+import { Colors, palette } from '@/styles/theme';
 import { StyleSheet } from 'react-native';
 
 const light = Colors.light;
@@ -127,5 +127,26 @@ export const styles = StyleSheet.create({
     color: '#b91c1c',
     marginTop: 12,
     textAlign: 'center',
+  },
+  deleteGameButton: {
+    marginTop: 12,
+    paddingVertical: 14,
+    borderRadius: 10,
+    backgroundColor: palette.red600,
+    alignItems: 'center',
+  },
+  deleteGameButtonPending: {
+    opacity: 0.7,
+  },
+  deleteGameButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: palette.white,
+  },
+  deleteError: {
+    color: '#b91c1c',
+    marginTop: 8,
+    textAlign: 'center',
+    fontSize: 14,
   },
 });

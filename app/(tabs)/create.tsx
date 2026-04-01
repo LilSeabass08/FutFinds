@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/AuthContext';
 import { useThemeMode } from '@/hooks/ThemeModeContext';
 import { getCreateScreenStyles } from '@/styles/screens/Create.styles';
 import type { CreateGameFormData, CreateGameScreenFormValues } from '@/types';
+import { format, isValid } from 'date-fns';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -25,8 +26,8 @@ const defaultValues: CreateGameScreenFormValues = {
   surface: '',
   fieldName: '',
   address: '',
-  date: '',
-  time: '',
+  date: null,
+  time: null,
   playersMax: '',
   type: '',
   minigameType: '',
@@ -80,13 +81,23 @@ export default function CreateScreen() {
       return;
     }
 
+    if (
+      data.date == null ||
+      data.time == null ||
+      !isValid(data.date) ||
+      !isValid(data.time)
+    ) {
+      setSubmitError('Please choose a valid date and time.');
+      return;
+    }
+
     const payload: CreateGameFormData = {
       title: data.title.trim(),
       surface: data.surface,
       fieldName: data.fieldName.trim(),
       address: data.address.trim(),
-      date: data.date.trim(),
-      time: data.time.trim(),
+      date: format(data.date, 'yyyy-MM-dd'),
+      time: format(data.time, 'h:mm a'),
       playersMax,
       type: data.type,
       minigameType: data.type === 'minigame' ? data.minigameType : null,

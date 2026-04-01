@@ -2,17 +2,19 @@
  * Game detail: load by route id, show info, join/leave with Firestore helpers.
  */
 import { GameDetailJoinSection } from '@/components/GameDetailJoinSection';
-import { getGameById, joinGame, leaveGame } from '@/firebase';
+import { deleteGame, getGameById, joinGame, leaveGame } from '@/firebase';
 import { useAuth } from '@/hooks/AuthContext';
 import { getGameTypeLabel } from '@/lib/gameDisplay';
 import { styles } from '@/styles/screens/GameDetail.styles';
 import { Colors, GAME_SURFACE_BADGE } from '@/styles/theme';
 import type { Game } from '@/types';
 import { useNavigation } from '@react-navigation/native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -28,6 +30,7 @@ function getRouteGameId(raw: string | string[] | undefined): string | undefined 
 
 export default function GameDetailScreen() {
   const navigation = useNavigation();
+  const router = useRouter();
   const { id: rawId } = useLocalSearchParams<{ id: string | string[] }>();
   const gameId = getRouteGameId(rawId);
   const { user } = useAuth();
@@ -37,6 +40,8 @@ export default function GameDetailScreen() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [deletePending, setDeletePending] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const reloadGame = useCallback(async () => {
     if (!gameId) {
@@ -87,10 +92,45 @@ export default function GameDetailScreen() {
   }, [gameId]);
 
   useLayoutEffect(() => {
-    if (game?.title) {
-      navigation.setOptions({ title: game.title });
-    }
+    navigation.setOptions({
+      headerBackTitle: '',
+      headerBackTitleVisible: false,
+      ...(game?.title ? { title: game.title } : {}),
+    });
   }, [game?.title, navigation]);
+
+  const onConfirmDeleteGame = useCallback(async () => {
+    if (!gameId) {
+      return;
+    }
+    setDeleteError(null);
+    setDeletePending(true);
+    try {
+      await deleteGame(gameId);
+      router.replace('/(tabs)');
+    } catch {
+      setDeleteError('Could not delete this game. Try again.');
+    } finally {
+      setDeletePending(false);
+    }
+  }, [gameId, router]);
+
+  const onPressDeleteGame = useCallback(() => {
+    Alert.alert(
+      'Delete Game',
+      'Are you sure you want to remove this listing? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            void onConfirmDeleteGame();
+          },
+        },
+      ],
+    );
+  }, [onConfirmDeleteGame]);
 
   const onJoin = async () => {
     if (!user?.uid || !game) {
@@ -147,6 +187,7 @@ export default function GameDetailScreen() {
   const cap = game.playersMax;
   const fillRatio = cap > 0 ? Math.min(joined / cap, 1) : 0;
   const isFull = joined >= cap;
+  const isCreator = Boolean(user?.uid && user.uid === game.createdBy);
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
@@ -198,6 +239,25 @@ export default function GameDetailScreen() {
           onJoin={onJoin}
           onLeave={onLeave}
         />
+
+        {isCreator ? (
+          <>
+            <Pressable
+              onPress={onPressDeleteGame}
+              disabled={deletePending}
+              style={[
+                styles.deleteGameButton,
+                deletePending && styles.deleteGameButtonPending,
+              ]}>
+              {deletePending ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.deleteGameButtonText}>Delete Game</Text>
+              )}
+            </Pressable>
+            {deleteError ? <Text style={styles.deleteError}>{deleteError}</Text> : null}
+          </>
+        ) : null}
 
         {actionError ? <Text style={styles.actionError}>{actionError}</Text> : null}
       </ScrollView>

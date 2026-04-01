@@ -8,6 +8,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   onSnapshot,
@@ -189,6 +190,16 @@ export async function leaveGame(gameId: string, userId: string): Promise<void> {
     });
   } catch (error) {
     console.error('[FutFinds] leaveGame failed:', error);
+    throw error;
+  }
+}
+
+export async function deleteGame(gameId: string): Promise<void> {
+  try {
+    const db = getFirestoreDb();
+    await deleteDoc(doc(db, 'games', gameId));
+  } catch (error) {
+    console.error('[FutFinds] deleteGame failed:', error);
     throw error;
   }
 }
