@@ -1,9 +1,11 @@
 /*
  * Join / leave / full / creator messaging for the game detail screen.
+ * Also hides the stack back label (e.g. "(tabs)") next to the header back arrow.
  */
 import { styles } from '@/styles/components/GameDetailJoinSection.styles';
 import type { Game } from '@/types';
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useLayoutEffect } from 'react';
 import { ActivityIndicator, Pressable, Text } from 'react-native';
 
 export interface GameDetailJoinSectionProps {
@@ -21,6 +23,14 @@ export function GameDetailJoinSection({
   onJoin,
   onLeave,
 }: GameDetailJoinSectionProps) {
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackButtonDisplayMode: 'minimal',
+    });
+  }, [navigation]);
+
   const isCreator = Boolean(userId && userId === game.createdBy);
   const isJoined = Boolean(userId && game.playersJoined.includes(userId));
   const isFull = game.playersJoined.length >= game.playersMax;

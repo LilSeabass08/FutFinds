@@ -52,9 +52,24 @@ function RootLayoutNav() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="(tabs)"
+        options={{
+          headerShown: false,
+          // Used as the previous screen’s back label when not using minimal mode (default is the route name "(tabs)").
+          title: 'Home',
+        }}
+      />
       <Stack.Screen name="auth" />
-      <Stack.Screen name="game/[id]" options={{ headerShown: true, title: 'Game' }} />
+      <Stack.Screen
+        name="game/[id]"
+        options={{
+          headerShown: true,
+          title: 'Game',
+          // Native stack ignores headerBackTitleVisible; "(tabs)" comes from the parent route name.
+          headerBackButtonDisplayMode: 'minimal',
+        }}
+      />
     </Stack>
   );
 }

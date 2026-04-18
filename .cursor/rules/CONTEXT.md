@@ -35,7 +35,7 @@ Expected behavior:
 
 ### Fix 2 — Back Arrow Header Label
 
-The back arrow in the header shows "(tabs)" as the back label next to the arrow.
+In components/GameDetailJoinSection the back arrow in the header shows "(tabs)" as the back label next to the arrow.
 
 Expected behavior:
 
@@ -46,6 +46,7 @@ Expected behavior:
 
 - app/game/[id].tsx — both fixes apply here
 - firebase/games.ts — add deleteGame function
+- components/GameDetailJoinSection.tsx
 
 ## Do Not Touch
 

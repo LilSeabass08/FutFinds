@@ -103,7 +103,8 @@ export async function createGame(data: CreateGameFormData, userId: string): Prom
       ...data,
       createdBy: userId,
       createdAt: serverTimestamp(),
-      playersJoined: [],
+      // Creator counts toward the cap so the listing shows 1/max immediately and avoids overbooking.
+      playersJoined: [userId],
     });
     return docRef.id;
   } catch (error) {

@@ -93,8 +93,7 @@ export default function GameDetailScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackTitle: '',
-      headerBackTitleVisible: false,
+      headerBackButtonDisplayMode: 'minimal',
       ...(game?.title ? { title: game.title } : {}),
     });
   }, [game?.title, navigation]);
