@@ -15,7 +15,7 @@ FutFinds is a React Native (Expo) soccer meetup app. Users can create, view, and
 - Backend/DB: Firebase (Firestore + Auth + Cloud Functions)
 - Language: TypeScript (strict mode)
 - Forms: react-hook-form
-- Maps: react-native-maps with Google Maps
+- Maps: `react-native-maps` is in the project for potential map UIs; the **Fields** tab uses a curated list only (no map SDK on that screen).
 - Date handling: date-fns
 
 ## Code Style Rules
@@ -45,7 +45,7 @@ FutFinds/
 ├── app/                        # Expo Router screens (default exports)
 │   ├── (tabs)/
 │   │   ├── index.tsx           # List view (Home)
-│   │   ├── map.tsx             # Map view
+│   │   ├── fields.tsx          # Approved fields (curated list, sorted by distance)
 │   │   ├── create.tsx          # Create game
 │   │   └── account.tsx         # Account/profile
 │   ├── game/[id].tsx           # Game detail screen
@@ -56,6 +56,10 @@ FutFinds/
 ├── components/                 # Reusable UI components (named exports)
 │
 ├── firebase/                   # Firebase config and helper functions
+│
+├── constants/                  # Static app data (e.g. APPROVED_FIELDS)
+│
+├── utils/                      # Pure helpers (e.g. distance, schedule time)
 │
 ├── hooks/                      # Custom React hooks (e.g. useGames, useAuth)
 │
@@ -70,7 +74,7 @@ FutFinds/
 │   │   └── ...
 │   └── screens/                # One stylesheet per screen
 │       ├── Home.styles.ts
-│       ├── Map.styles.ts
+│       ├── Fields.styles.ts
 │       ├── Create.styles.ts
 │       ├── Account.styles.ts
 │       ├── GameDetail.styles.ts

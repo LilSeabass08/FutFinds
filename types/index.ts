@@ -1,5 +1,5 @@
 /*
- * All TypeScript interfaces live here (auth, Firebase config, games, users, Phase 2 forms).
+ * All TypeScript interfaces live here (auth, Firebase config, games, users, forms, approved fields).
  */
 import type { Timestamp } from "firebase/firestore";
 
@@ -59,7 +59,10 @@ export type CreateGameFormData = Omit<
   "id" | "createdBy" | "createdAt" | "playersJoined"
 >;
 
-/** Create Game tab form state (location is set on submit until Phase 3 geocoding). */
+/**
+ * Create Game tab form state. `fieldName` and `address` are read-only on screen and filled from the
+ * Fields tab via route params; GPS coordinates are held in screen state until submit.
+ */
 export interface CreateGameScreenFormValues {
   title: string;
   surface: "" | Game["surface"];
@@ -75,6 +78,38 @@ export interface CreateGameScreenFormValues {
 /** Filter for game list / map views by surface. */
 export interface SurfaceFilter {
   type: "all" | "outdoor" | "indoor" | "futsal";
+}
+
+/** Approved public field from the curated seed list (Phase 3 Fields tab). */
+export interface SoccerField {
+  id: string;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+}
+
+/** User or fallback map point for distance sorting (Phase 3). */
+export interface UserLocationCoords {
+  lat: number;
+  lng: number;
+}
+
+/** Foreground location permission outcome after the initial request. */
+export type UserLocationPermissionStatus =
+  | "pending"
+  | "granted"
+  | "denied"
+  | "unavailable";
+
+/** Shared app location used to sort approved fields by distance. */
+export interface UserLocationContextValue {
+  coords: UserLocationCoords;
+  permission: UserLocationPermissionStatus;
+  /** True when `coords` are a fixed fallback (denied GPS or position error). */
+  isApproximate: boolean;
+  ready: boolean;
+  refresh: () => Promise<void>;
 }
 
 export const MINIGAME_OPTIONS: string[] = [

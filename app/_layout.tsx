@@ -13,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationTheme } from '@/styles/theme';
 import { AuthProvider, useAuth } from '@/hooks/AuthContext';
 import { ThemeModeProvider, useThemeMode } from '@/hooks/ThemeModeContext';
+import { UserLocationProvider } from '@/hooks/UserLocationContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -90,7 +91,9 @@ export default function RootLayout() {
     <ThemeModeProvider>
       <AuthProvider>
         <SafeAreaProvider>
-          <RootLayoutTheme />
+          <UserLocationProvider>
+            <RootLayoutTheme />
+          </UserLocationProvider>
         </SafeAreaProvider>
       </AuthProvider>
     </ThemeModeProvider>

@@ -1,7 +1,8 @@
 /*
  * This file defines the bottom tab navigation used in Phase 1.
- * It connects the main FutFinds screens: list, map, create, and account.
+ * It connects the main FutFinds screens: list, fields, create, and account.
  */
+import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/styles/theme';
 import { Tabs } from 'expo-router';
 import React from 'react';
@@ -29,9 +30,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="map"
+        name="fields"
         options={{
-          title: 'Map',
+          title: 'Fields',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="location-outline" color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen

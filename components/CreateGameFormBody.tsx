@@ -10,6 +10,7 @@ import {
   CreateGameDatePickerField,
   CreateGameTimePickerField,
 } from '@/components/CreateGameDateAndTimePickers';
+import { CreateGameVenueReadOnlySection } from '@/components/CreateGameVenueReadOnlySection';
 import { CreateGameTextRow } from '@/components/CreateGameTextRow';
 import { getCreateGameFormBodyStyles } from '@/styles/components/CreateGameFormBody.styles';
 import type { CreateGameScreenFormValues } from '@/types';
@@ -52,21 +53,7 @@ export function CreateGameFormBody({ control, gameType }: CreateGameFormBodyProp
         )}
       />
 
-      <CreateGameTextRow
-        control={control}
-        name="fieldName"
-        label="Field name"
-        placeholder="Riverside Park — Field 2"
-        rules={{ required: 'Field name is required' }}
-      />
-
-      <CreateGameTextRow
-        control={control}
-        name="address"
-        label="Address"
-        placeholder="123 Main St, City"
-        rules={{ required: 'Address is required' }}
-      />
+      <CreateGameVenueReadOnlySection control={control} />
 
       <CreateGameDatePickerField control={control} />
 

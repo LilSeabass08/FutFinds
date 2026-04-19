@@ -1,63 +1,79 @@
-# FutFinds — Bug Fix Context
+# FutFinds — Project Context
 
 ## Current Phase
 
-Bug Fix — Game Detail Screen (app/game/[id].tsx)
+Phase 3 — Nearby Fields Tab (Curated List) — **complete**
 
-## What's Been Built (Relevant Files)
+## What's Been Built
 
-- app/game/[id].tsx — Game detail screen
-- firebase/games.ts — contains createGame, joinGame, leaveGame (need to add deleteGame)
-- hooks/useAuth.ts — returns { user, loading }
-- types/index.ts — Game interface
+- [x] Expo project scaffolded with Expo Router
+- [x] Firebase Auth (Email + Password)
+- [x] Firestore with security rules
+- [x] Bottom tab navigation (List, Fields, Create, Account)
+- [x] Auth guard with login/signup screens
+- [x] types/index.ts — Game, AppUser, CreateGameFormData, SurfaceFilter, MINIGAME_OPTIONS, SoccerField, user location types
+- [x] firebase/games.ts — createGame, getGamesListener, getGameById, joinGame, leaveGame
+- [x] firebase/users.ts — createUserDocument, getUserById
+- [x] firebase/auth.ts — signUp, signIn, signOut, onAuthChange
+- [x] hooks/useAuth.ts, useGames.ts, useUser.ts, UserLocationContext (expo-location + fallback)
+- [x] components/GameCard.tsx, FieldListCard.tsx, CreateGameVenueReadOnlySection.tsx
+- [x] constants/fields.ts — APPROVED_FIELDS, APPROVED_FIELDS_REGION_CENTER
+- [x] utils/distance.ts — Haversine miles + sort by distance
+- [x] List View — filters, pull to refresh, real time updates
+- [x] Fields tab — FlatList of approved venues sorted by distance (no map SDK on this screen)
+- [x] Create Game — venue from Fields tab only (route params + read-only UI); real lat/lng on submit
+- [x] Game Detail — join/leave with all 4 states
+- [x] Account screen — stats, sign out
+- [x] Date and time fields use proper pickers — stored as "YYYY-MM-DD" and "h:mm a"
 
-## Fixes To Implement
+## Phase 3: Step-by-Step Execution Plan
 
-### Fix 1 — Delete Game (Creator Only)
+_Agent Instruction: Do NOT execute all of Phase 3 at once. Wait for the user to prompt you to begin each step sequentially._
 
-The game creator currently sees "You created this game" label but has no way to delete the listing.
+**Step 3.1: Curated Fields Seed Data**
 
-Expected behavior:
+- Create a new file (e.g., `constants/fields.ts`).
+- Export a static array of mock approved soccer fields. Each object should have an `id`, `name`, `address`, `lat`, and `lng`.
 
-- If user.uid === game.createdBy, show a red "Delete Game" button below the "You created this game" label
-- On press, show a confirmation Alert (React Native Alert) with:
-  - Title: "Delete Game"
-  - Message: "Are you sure you want to remove this listing? This cannot be undone."
-  - Two buttons: "Cancel" (dismiss) and "Delete" (destructive, calls delete logic)
-- On confirm:
-  - Call deleteGame(gameId) from firebase/games.ts
-  - Show a loading spinner on the button while deleting
-  - On success, navigate back to app/(tabs)/index.tsx
-  - On error, show an error message below the button
-- Add deleteGame(gameId: string): Promise<void> to firebase/games.ts
-  - Deletes the document from the "games" collection
-  - Includes try/catch error handling
+**Step 3.2: Location Permissions & Setup**
 
-### Fix 2 — Back Arrow Header Label
+- Install `expo-location`.
+- Implement a hook or utility in the app to request foreground location permissions on load.
+- Capture the user's current `lat/lng`. Handle the "permission denied" state gracefully with a fallback UI or default location.
 
-In components/GameDetailJoinSection the back arrow in the header shows "(tabs)" as the back label next to the arrow.
+**Step 3.3: Distance Logic & Sorting**
 
-Expected behavior:
+- Implement a utility function (e.g., Haversine formula) to calculate the distance in miles between the user's current `lat/lng` and each field's `lat/lng` in the seed data.
+- Sort the static list of fields so the closest ones appear first.
 
-- No text next to the back arrow — just the arrow icon alone
-- Fix by adding a custom headerBackTitle option in the screen config
+**Step 3.4: Fields Tab UI**
 
-## Files To Touch
+- Repurpose the former map tab as **`app/(tabs)/fields.tsx`** with **`styles/screens/Fields.styles.ts`** (the old `map.tsx` / `Map.styles.ts` are removed).
+- _CRITICAL RULE:_ Do NOT use `react-native-maps` or any external map APIs on this screen. Display the sorted seed data as a scrollable `FlatList` of cards showing the field name, address, and calculated distance in miles.
 
-- app/game/[id].tsx — both fixes apply here
-- firebase/games.ts — add deleteGame function
-- components/GameDetailJoinSection.tsx
+**Step 3.5: Navigation & Pre-filling Create Form**
 
-## Do Not Touch
+- Add an `onPress` event to the field cards in the Fields tab.
+- Route the user to the Create tab (`/(tabs)/create`), passing the `fieldName`, `address`, `lat`, and `lng` via Expo Router params.
+- Update `CreateGameScreen` to parse incoming route params and pre-fill the form state.
+- Make the Location/Field Name inputs on the Create form read-only (or visual text blocks instead of inputs), since users must select from the approved list.
+- Update the `createGame` payload to submit the passed `lat/lng` instead of the previous hardcoded `{ lat: 0, lng: 0 }`.
 
-- Any other screens
-- Firestore security rules (delete is already allowed for creators)
-- types/index.ts
-- Any hooks
+## Key Design Decision
 
-## Rules
+The app relies strictly on a curated database of approved public fields. We are NOT allowing users to type custom addresses, and we are NOT using external Geocoding APIs. The former "Map" tab is the **Fields** tab: a simple list of approved locations sorted by distance.
 
-- Always use try/catch in Firebase functions
-- Use TypeScript throughout
-- Use React Native Alert for the confirmation dialog — no third party library
-- Follow all existing code patterns already in these files
+## What's Coming Next (Phase 4)
+
+- App icon and splash screen
+- Polish pass: loading states, empty states, error handling audit
+- EAS Build for App Store and Google Play submission
+
+## Environment Variables Needed
+
+- EXPO_PUBLIC_FIREBASE_API_KEY ✅
+- EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ✅
+- EXPO_PUBLIC_FIREBASE_PROJECT_ID ✅
+- EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET ✅
+- EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ✅
+- EXPO_PUBLIC_FIREBASE_APP_ID ✅
